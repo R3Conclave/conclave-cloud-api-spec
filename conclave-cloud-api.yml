@@ -1,8 +1,8 @@
 openapi: 3.0.3
 info:
-  version: 1.1.0
+  version: 1.2.0
   title: Conclave Cloud API
-  description: The API for interacting with Conclave Cloud.
+  description: The API for interacting with Conclave Cloud. See the `x-error-codes` for error codes. When reporting an error, please include the whole error response.
 tags:
   - name: Platform
     description: General purpose endpoints regarding the Platform.
@@ -48,11 +48,13 @@ paths:
         '200':
           $ref: "#/components/responses/ApiKeys.List"
         '400':
-          $ref: '#/components/responses/ParametersError'
+          $ref: '#/components/responses/InvalidError'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
     post:
@@ -71,6 +73,8 @@ paths:
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
   /projects/{projectUID}/apikeys/{apiKeyUID}:
@@ -88,11 +92,13 @@ paths:
         '204':
           description: The API key was deleted successfully.
         '400':
-          $ref: '#/components/responses/ParametersError'
+          $ref: '#/components/responses/InvalidError'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
   /projects:
@@ -146,11 +152,13 @@ paths:
         '200':
           $ref: "#/components/responses/Projects.Get"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
     delete:
@@ -166,11 +174,13 @@ paths:
         '204':
           description: The project was deleted successfully.
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
 
@@ -184,27 +194,19 @@ paths:
         - Functions
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - name: limit
-          description: Number of entities to include in the result (0-200). The default limit is 30. A value of 0 sets the limit to the maximum.
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: skip
-          description: Number of entities to skip in the result.
-          in: query
-          required: false
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/Functions.List.Limit"
+        - $ref: "#/components/parameters/Functions.List.Skip"
       responses:
         '200':
           $ref: "#/components/responses/Functions.List"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
 
@@ -219,21 +221,18 @@ paths:
       parameters:
         - $ref: "#/components/parameters/projectUID"
         - $ref: "#/components/parameters/functionName"
-        - name: code
-          description: Include action code in the result
-          in: query
-          required: false
-          schema:
-            type: boolean
+        - $ref: "#/components/parameters/Functions.Get.Code"
       responses:
         '200':
           $ref: "#/components/responses/Functions.Get"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
     put:
@@ -252,11 +251,13 @@ paths:
         '200':
           $ref: "#/components/responses/Functions.CreateOrUpdate"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
     delete:
@@ -273,11 +274,13 @@ paths:
         '204':
           description: The function was deleted successfully.
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
 
@@ -295,7 +298,7 @@ paths:
         '200':
           $ref: "#/components/responses/Keys.Public.Get"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
@@ -313,35 +316,22 @@ paths:
       operationId: invocations.invoke
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - name: blocking
-          description: Blocking or non-blocking invocation. Default is non-blocking.
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: result
-          description: Return only the result of a blocking invocation. Default is false.
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: timeout
-          description: Wait no more than specified duration in milliseconds for a blocking response. Default value and max allowed timeout are 60000.
-          in: query
-          required: false
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/Invocations.Invoke.Blocking"
+        - $ref: "#/components/parameters/Invocations.Invoke.ResultOnly"
+        - $ref: "#/components/parameters/Invocations.Invoke.Timeout"
       requestBody:
         $ref: '#/components/requestBodies/Invocations.Invoke'
       responses:
         '200':
           $ref: "#/components/responses/Invocations.Invoke"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
     get:
@@ -353,53 +343,23 @@ paths:
       operationId: invocations.list
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - name: name
-          description: Name of the item
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: limit
-          description: Number of entities to include in the result (0-200). The default limit is 30. A value of 0 sets the limit to the maximum.
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: skip
-          description: Number of entities to skip in the result.
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: since
-          description: Only include entities later than this timestamp (measured in milliseconds since Thu, 01 Jan 1970)
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-        - name: upto
-          description: Only include entities earlier than this timestamp (measured in milliseconds since Thu, 01 Jan 1970)
-          in: query
-          required: false
-          schema:
-            type: integer
-            format: int64
-        - name: docs
-          description: Whether to include full entity description.
-          in: query
-          required: false
-          schema:
-            type: boolean
+        - $ref: "#/components/parameters/Invocations.List.FunctionName"
+        - $ref: "#/components/parameters/Invocations.List.Limit"
+        - $ref: "#/components/parameters/Invocations.List.Skip"
+        - $ref: "#/components/parameters/Invocations.List.Since"
+        - $ref: "#/components/parameters/Invocations.List.Upto"
+        - $ref: "#/components/parameters/Invocations.List.Docs"
       responses:
         '200':
           $ref: "#/components/responses/Invocations.List"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
 
@@ -419,11 +379,13 @@ paths:
         '200':
           $ref: "#/components/responses/Invocations.Get"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
 
@@ -442,11 +404,13 @@ paths:
         '200':
           $ref: "#/components/responses/Invocations.Get.Logs"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
 
@@ -465,7 +429,45 @@ paths:
         '200':
           $ref: "#/components/responses/Invocations.Get.Result"
         '400':
-          $ref: "#/components/responses/ParametersError"
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/GenericError"
+  /usage:
+    get:
+      description: Return the usage summary.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Projects.Read"
+      tags:
+        - Usage
+      operationId: getUsage
+      parameters:
+        - name: year
+          description: Year for which to obtain usage metrics (UTC).
+          in: query
+          required: true
+          schema:
+            type: integer
+        - name: month
+          description: Month for which to obtain usage metrics (UTC).
+          in: query
+          required: true
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully returned usage metrics summary.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Usage'
+        '400':
+          $ref: "#/components/responses/GenericError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
@@ -473,6 +475,20 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
 components:
+  x-error-codes:
+    UNAUTHORIZED: 100
+    FORBIDDEN: 101
+    ILLEGAL_ARGUMENT: 102
+    ILLEGAL_METHOD: 103
+    WSKADMIN_CONNECTION: 104
+    FUNCTIONS_ERROR: 105
+    NOT_FOUND: 106
+    INVALID_ARGUMENT: 107
+    GENERIC_ERROR: 108
+    UNEXPECTED_ERROR: 109
+    INVALID_CONTENT_TYPE: 110
+    INVALID_REQUEST_BODY: 111
+    REJECTED_REQUEST: 112
   x-permissions:
     Projects.Read: Projects.Read
     Projects.Write: Projects.Write
@@ -594,10 +610,10 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Invocations.Invocation.Logs.List"
-    ParametersError:
-      description: Invalid parameters.
+    InvalidError:
+      description: Invalid request.
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/Generic.ErrorResponse'
     Platform.Whoami:
@@ -609,44 +625,160 @@ components:
     UnauthorizedError:
       description: The request does not contain valid authentication.
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/Generic.ErrorResponse"
     ForbiddenError:
       description: The currently authenticated context does not have permissions to execute the operation.
       content:
-        application/json:
+        application/problem+json:
           schema:
             $ref: "#/components/schemas/Generic.ErrorResponse"
-    GenericError:
-      description: Generic error
+    NotFoundError:
+      description: The specfied entity does not exist.
       content:
-        application/json:
+        application/problem+json:
+          schema:
+            $ref: "#/components/schemas/Generic.ErrorResponse"
+          example:
+            error:
+              code: 107
+              message: Entity could not be found
+              detail: null
+            requestId: 18450f48ea6e3e993c8ec5d24ff8ffebdf2523ec481bb2a7c392991dc5d83d80
+    GenericError:
+      description: Generic error.
+      content:
+        application/problem+json:
           schema:
             $ref: '#/components/schemas/Generic.ErrorResponse'
   parameters:
+    Functions.List.Limit:
+      name: limit
+      description: Number of entities to include in the result. A value of 0 sets the limit to the maximum.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 30
+        minimum: 0
+        maximum: 200
+    Functions.List.Skip:
+      name: skip
+      description: Number of entities to skip in the result.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    Functions.Get.Code:
+      name: code
+      description: Include function code in the result. Turning this on will make the response bigger.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    Invocations.Invoke.Blocking:
+      name: blocking
+      description: Control whether the response of the request will contain the result of the invocation.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: true
+    Invocations.Invoke.ResultOnly:
+      name: resultOnly
+      description: Return only the result. This flag can only be set to `true` if the invocation is blocking(see the `blocking` parameter).
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    Invocations.Invoke.Timeout:
+      name: timeout
+      description: Maximum time which will be waited for a blocking invocation call.
+      in: query
+      required: false
+      schema:
+        type: integer
+        minimum: 100
+        maximum: 60000
+    Invocations.List.FunctionName:
+      name: functionName
+      description: Name of the invoked function.
+      in: query
+      required: false
+      schema:
+        $ref: "#/components/schemas/Functions.Name"
+    Invocations.List.Limit:
+      name: limit
+      description: Number of entities to include in the result. A value of 0 sets the limit to the maximum.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 30
+        minimum: 0
+        maximum: 200
+    Invocations.List.Skip:
+      name: skip
+      description: Number of entities to skip in the result.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
+    Invocations.List.Since:
+      name: since
+      description: Only include entities later than this timestamp.(measured in milliseconds since Thu, 01 Jan 1970)
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    Invocations.List.Upto:
+      name: upto
+      description: Only include entities earlier than this timestamp.(measured in milliseconds since Thu, 01 Jan 1970)
+      in: query
+      required: false
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+    Invocations.List.Docs:
+      name: docs
+      description: Whether to include full entity description.
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
     apiKeyUID:
       name: apiKeyUID
       description: The UID of the API Key.
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/Generic.Uid"
+        $ref: "#/components/schemas/ApiKey.Uid"
     projectUID:
       name: projectUID
       description: The UID of a project.
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/Generic.Uid"
+        $ref: "#/components/schemas/Project.Uid"
     invocationUID:
       name: invocationUID
       description: The UID of an invocation.
       in: path
       required: true
       schema:
-        # TODO: add constraints here
         type: string
+        pattern: "^[0-9a-zA-Z-_]{1,64}$"
     functionName:
       name: functionName
       description: Name of a function.
@@ -654,8 +786,7 @@ components:
       in: path
       required: true
       schema:
-        # TODO: add constraints here
-        type: string
+        $ref: "#/components/schemas/Functions.Name"
   schemas:
     ApiKeys.ApiKey:
       type: object
@@ -673,13 +804,15 @@ components:
     ApiKeys.Create:
       allOf:
         - $ref: '#/components/schemas/ApiKeys.ApiKey'
-        - properties:
-            apiKey:
-              type: string
-              description: "The key credential that you can use as means to obtain tokes to use this API. You
-              will only see this once upon creating an API key."
-              minLength: 1
-              example: eyJ0ZW5hbnRVaWQiOiJURUY4QkM0QzlFMEE0NUZCRjAyNjg3M0FDRDU0RjQzOTQ4QTMxRjcwQzU5NTYzQzQ1NkQ3NDI3NDgzMDBGRDIxIiwiYXBpS2V5UGxhaW4iOiJjOTZlMmNmYTRhNjkwNDRiMzc4Y2IzYzYxMGMxNzJlMGE1ZTkzZDNkZDQwZDM4ZTBmNmM3YzBiNmFiNjQ3ODY5In0=
+        - $ref: '#/components/schemas/ApiKeys.Create.ApiKey'
+    ApiKeys.Create.ApiKey:
+      properties:
+        apiKey:
+          type: string
+          description: "The key credential that you can use as means to obtain tokes to use this API. You
+          will only see this once upon creating an API key."
+          minLength: 1
+          example: eyJ0ZW5hbnRVaWQiOiJURUY4QkM0QzlFMEE0NUZCRjAyNjg3M0FDRDU0RjQzOTQ4QTMxRjcwQzU5NTYzQzQ1NkQ3NDI3NDgzMDBGRDIxIiwiYXBpS2V5UGxhaW4iOiJjOTZlMmNmYTRhNjkwNDRiMzc4Y2IzYzYxMGMxNzJlMGE1ZTkzZDNkZDQwZDM4ZTBmNmM3YzBiNmFiNjQ3ODY5In0=
     ApiKeys.List:
       type: object
       required:
@@ -689,6 +822,10 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/ApiKeys.ApiKey'
+    Functions.Name:
+      type: string
+      pattern: "^[a-zA-Z0-9_-]{1,64}$"
+      example: myFunction
     Functions.List:
       type: object
       required:
@@ -718,7 +855,7 @@ components:
       properties:
         name:
           type: string
-          description: Name of the function
+          description: Name of the function.
           minLength: 1
     Functions.Partial.Updated:
       required:
@@ -727,7 +864,7 @@ components:
         updated:
           type: integer
           format: int64
-          description: Time when the function was last updated
+          description: Time when the function was last updated.
     Functions.Partial.Exec:
       required:
         - exec
@@ -742,112 +879,144 @@ components:
       properties:
         version:
           type: string
-          description: Semantic version of the function
-          minLength: 1
-          example: 1.0.0
+          description: Semantic version of the function.
+          pattern: "^(0|[1-9]\\d{0,8})\\.(0|[1-9]\\d{0,8})\\.(0|[1-9]\\d{0,8})$"
+          example: "1.2.3"
         limits:
           $ref: "#/components/schemas/Functions.Function.Limits"
         hash:
           type: string
-          description: The SHA256 of the function code
-          minLength: 64
+          description: The SHA256 of the function code.
+          pattern: "^[A-Z\\d]{1,64}$"
           example: 7EC88782A989E8C9F989CB898E97866554343445A7EC88782A989E8C9F989CB8
     Functions.Function.Exec:
-      description: The actual code and entrypoint that's executed in the context of the function
+      description: The actual code and entrypoint that's executed in the context of the function.
       required:
         - code
         - main
       properties:
         code:
           type: string
-          description: The code to execute
+          description: The code to execute.
+          pattern: "^[a-zA-Z0-9+/=]+$"
         main:
           type: string
-          description: The entry point of the code
+          description: The entry point of the code.
+          pattern: "^[a-zA-Z0-9+/=]+$"
     Functions.Function.Limits:
-      description: Limits on a specific function
+      description: Limits on a specific function.
       properties:
         timeout:
           type: integer
           format: int32
-          description: timeout in milliseconds
+          description: Timeout in milliseconds.
           default: 60000
+          minimum: 100
+          maximum: 300000
         memory:
           type: integer
           format: int32
-          description: memory in megabytes
+          description: Memory in megabytes.
           default: 256
+          minimum: 128
+          maximum: 512
         epc:
           type: integer
           format: int32
-          description: epc in megabytes
+          description: Epc in megabytes.
           default: 256
+          minimum: 1
+          maximum: 512
     Invocations.Invocation:
+      description: Full invocation details
+      type: object
       properties:
         uid:
           type: string
           description: UID of an invocation
+          example: 2c37ace110144717b7ace110146717bc
         function:
           type: object
           description: The function that was invoked
           properties:
             name:
               type: string
-              description: Name of the invoked function
+              description: Name of the invoked function.
             version:
               type: string
-              description: Semantic version of the invoked function
+              description: Semantic version of the invoked function.
+          example:
+            name: sayHello
+            version: 223.3.4
         start:
           type: integer
           format: int64
-          description: Time when the invocation began
+          description: Time when the invocation began.
+          example: 1656459379320
         end:
           type: integer
           format: int64
-          description: Time when the invocation completed
+          description: Time when the invocation completed.
+          example: 1656459379333
         duration:
           type: integer
-          description: How long the invocation took(milliseconds)
+          description: How long the invocation took(milliseconds).
+          example: 15
         response:
           $ref: "#/components/schemas/Invocations.Invocation.Result"
         logs:
           $ref: "#/components/schemas/Invocations.Invocation.Logs"
         cause:
           type: string
-          description: The invocation cause UID that caused this invocation
+          description: The invocation cause UID that caused this invocation.
         statusCode:
           type: integer
           format: int32
           description: The status code
-        # TODO: mark if it's ms, s, etc.
+        # TODO: Ask Roy about the 2 props below as they come from annotations -ms/s?.
         waitTime:
           type: number
           description: The time spent waiting in Conclave Cloud before the function was invoked.
+          example: 7
         timeout:
           type: boolean
           description: Indicates whether the invocation exceeded the maximum permitted time for a function.
+          example: false
         initTime:
           type: number
           description: The time spent initialising the function. If present, it indicates that the function required a cold start.
 
+
     Invocations.Invocation.Result:
-      description: The result of the invocation
+      description: Invocation result
       type: object
       properties:
         status:
           type: string
-          description: Exit status of the invocation
+          description: Exit status of the invocation.
         result:
-          description: The return value from the invocation
+          type: object
+          description: The return value from the invocation.
+          properties:
+            result:
+              type: string
+              description: Base64 encoded encrypted result
         success:
           type: boolean
-          description: Whether the invocation was successful or not
+          description: Whether the invocation was successful or not.
         size:
           type: integer
-          description: Size of response
+          description: The size of the response.
+      example:
+        status: success
+        result:
+          result: ABUBAAAAAAAA=
+        success: true
+        size: 297
+
 
     Invocations.Invocation.Logs.List:
-      description: List of logs generated by the invocation
+      description: List of logs generated by the invocation.
       type: object
       required:
         - list
@@ -856,9 +1025,10 @@ components:
           $ref: "#/components/schemas/Invocations.Invocation.Logs"
 
     Invocations.Invocation.Logs:
-      description: Logs generated by the invocation
+      description: Logs generated by the invocation.
       items:
         type: string
+        example: "2022-06-28T23:36:19.325672356Z stdout: 2022-06-28 23:36:19 INFO  RunHandler:38 - Invoking action."
 
     Invocations.Invoke:
       required:
@@ -866,8 +1036,7 @@ components:
         - data
       properties:
         name:
-          type: string
-          description: Function name
+          $ref: "#/components/schemas/Functions.Name"
         data:
           type: string
           description: A Base64 encoded string containing encrypted parameters for the invocation.
@@ -915,14 +1084,14 @@ components:
       properties:
         uid:
           allOf:
-            - description: UID of the project. Will be auto-generated from the name if not supplied
-            - $ref: "#/components/schemas/Generic.Uid"
+            - description: UID of the project. Will be auto-generated from the name if not supplied.
+            - $ref: "#/components/schemas/Project.Uid"
         name:
           type: string
-          description: The name of the project.
+          description: The name of the project. Must be unique, may not start with whitespace and can contain any printable UTF-8 characters.
+          title: Project name
           example: My Project
-          minLength: 1
-          maxLength: 255
+          pattern: "^[^\P{Cc} ][\P{Cc}\P{Cn}\P{Cs}]{1,254}$"
     Projects.Project:
       type: object
       required:
@@ -989,14 +1158,18 @@ components:
           description: The policy to use to constrain access of the private key material.
           example: SEC:SECURE
 
+    Project.Uid:
+      $ref: "#/components/schemas/Generic.Uid"
+
+    ApiKey.Uid:
+      $ref: "#/components/schemas/Generic.Uid"
+
     Generic.Uid:
       type: string
-      example: my-project
-      minLength: 1
-      maxLength: 64
-      pattern: "^[.A-Za-z0-9_ -]*$"
+      pattern: "^[a-z0-9_-]{1,64}$"
+      example: "my-uid"
 
-    Generic.ErrorDetails:
+    Generic.ErrorResponse:
       type: object
       required:
         - code
@@ -1009,17 +1182,37 @@ components:
         message:
           description: A description of the error that can be presented on a user interface.
           type: string
-          example: Incorrect username or password.
+          example: Server Error
         detail:
           description: An optional detailed explanation of the error for use by developers - not the end user.
           type: string
-          example: Ensure that the username and password included in the request are correct.
-
-    Generic.ErrorResponse:
+          example: An unexpected server error has occurred.
+        requestId:
+          type: string
+          example: 18450f48ea6e3e993c8ec5d24ff8ffebdf2523ec481bb2a7c392991dc5d83d80
+        errors:
+          type: array
+          items:
+            type: string
+          example: []
+    Usage:
       type: object
       required:
-        - error
+        - duration
+        - memory
+        - numberOfInvocations
+        - megabyteMilliseconds
       properties:
-        error:
-          $ref: "#/components/schemas/Generic.ErrorDetails"
-
+        duration:
+          type: integer
+          description: Total duration of the invocations in milliseconds.
+        memory:
+          type: integer
+          description: Total memory allocated by the invocations in MB.
+        numberOfInvocations:
+          type: integer
+          description: Total number of invocations.
+        megabyteMilliseconds:
+          type: number
+          format: int64
+          description: Execution time in MB-ms.
