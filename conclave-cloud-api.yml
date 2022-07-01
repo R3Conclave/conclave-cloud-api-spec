@@ -1,6 +1,6 @@
 openapi: 3.0.3
 info:
-  version: 1.2.0
+  version: 1.3.0
   title: Conclave Cloud API
   description: The API for interacting with Conclave Cloud. See the `x-error-codes` for error codes. When reporting an error, please include the whole error response.
 tags:
@@ -438,40 +438,52 @@ paths:
           $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
-  /usage:
+  /platform/usage:
     get:
-      description: Return the usage summary.
+      description: Return the usage summary for the specified monthly period.
       x-permissions-required:
-        $ref: "#/components/x-permissions/Projects.Read"
+        $ref: "#/components/x-permissions/Platform.Usage.Get"
       tags:
-        - Usage
-      operationId: getUsage
+        - Platform
+      operationId: platform.get.usage
       parameters:
-        - name: year
-          description: Year for which to obtain usage metrics (UTC).
-          in: query
-          required: true
-          schema:
-            type: integer
-        - name: month
-          description: Month for which to obtain usage metrics (UTC).
-          in: query
-          required: true
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/year"
+        - $ref: "#/components/parameters/month"
       responses:
         '200':
-          description: Successfully returned usage metrics summary.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/Usage'
+          $ref: "#/components/responses/Platform.Usage"
         '400':
-          $ref: "#/components/responses/GenericError"
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/GenericError"
+  /platform/invoicing:
+    get:
+      description: Return the invoicing summary for the specified monthly period.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Platform.Invoicing.Get"
+      tags:
+        - Platform
+      operationId: platform.get.invoicing
+      parameters:
+        - $ref: "#/components/parameters/year"
+        - $ref: "#/components/parameters/month"
+      responses:
+        '200':
+          $ref: "#/components/responses/Platform.Invoicing"
+        '400':
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
 components:
@@ -500,6 +512,8 @@ components:
     ApiKeys.Write: ApiKeys.Write
     ApiKeys.Read: ApiKeys.Read
     KeysPublic.Read: KeysPublic.Read
+    Platform.Invoicing.Get: Platform.Invoicing.Get
+    Platform.Usage.Get: Platform.Usage.Get
   securitySchemes:
     conclaveAuth:
       type: http
@@ -622,6 +636,18 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Platform.Whoami'
+    Platform.Invoicing:
+      description: Successfully returned invoicing information about the specified period.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Platform.Invoicing'
+    Platform.Usage:
+      description: Successfully returned usage information about the specified period.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Platform.Usage'
     UnauthorizedError:
       description: The request does not contain valid authentication.
       content:
@@ -764,6 +790,26 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/ApiKey.Uid"
+    month:
+      name: month
+      description: A valid month number (1-12 where 1 is January and 12 is December) (UTC).
+      in: query
+      required: true
+      schema:
+        type: integer
+        minimum: 1
+        maximum: 12
+        example: 5
+    year:
+      name: year
+      description: A valid year number (>=2022) (UTC).
+      in: query
+      required: true
+      schema:
+        type: integer
+        minimum: 2022
+        maximum: 3000
+        example: 2022
     projectUID:
       name: projectUID
       description: The UID of a project.
@@ -1195,7 +1241,7 @@ components:
           items:
             type: string
           example: []
-    Usage:
+    Platform.Usage:
       type: object
       required:
         - duration
@@ -1206,13 +1252,58 @@ components:
         duration:
           type: integer
           description: Total duration of the invocations in milliseconds.
+          example: 51233
         memory:
           type: integer
           description: Total memory allocated by the invocations in MB.
+          example: 32452
         numberOfInvocations:
           type: integer
           description: Total number of invocations.
+          example: 153
         megabyteMilliseconds:
           type: number
           format: int64
           description: Execution time in MB-ms.
+          example: 312
+    Platform.Invoicing:
+      type: object
+      required:
+        - duration
+        - initTime
+        - memory
+        - size
+        - waitTime
+        - numberOfInvocations
+        - megabyteMilliseconds
+      properties:
+        duration:
+          type: integer
+          description: Total duration of the invocations in milliseconds.
+          example: 51233
+        initTime:
+          type: integer
+          description: Total time during init phase of invocations in milliseconds.
+          example: 15300
+        memory:
+          type: integer
+          description: Total memory allocated by the invocations in MB.
+          example: 32452
+        size:
+          type: integer
+          format: int64
+          description: Total size of the invocation responses in bytes.
+          example: 235321312
+        waitTime:
+          type: integer
+          description: Total time during wait phase of invocations in milliseconds.
+          example: 5242
+        numberOfInvocations:
+          type: integer
+          description: Total number of invocations.
+          example: 153
+        megabyteMilliseconds:
+          type: number
+          format: int64
+          description: Execution time in MB-ms.
+          example: 312
