@@ -19,6 +19,21 @@ tags:
 security:
   - conclaveAuth: []
 paths:
+  /platform/info:
+    get:
+      description: Return information about the platform
+      tags:
+        - Platform
+      operationId: platform.info
+      responses:
+        '200':
+          $ref: "#/components/responses/Platform.Info"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          $ref: "#/components/responses/GenericError"
   /platform/whoami:
     get:
       description: Return information about the currently authenticated principal.
@@ -630,6 +645,12 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Generic.ErrorResponse'
+    Platform.Info:
+      description: Successfully returned information about the platform.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Platform.Info'
     Platform.Whoami:
       description: Successfully returned information about the current user.
       content:
@@ -1098,6 +1119,20 @@ components:
           items:
             $ref: "#/components/schemas/Invocations.Invocation"
 
+    Platform.Info:
+      type: object
+      required:
+        - api
+      properties:
+        api:
+          type: object
+          required:
+            - version
+          properties:
+            version:
+              description: The version of the API
+              type: string
+              example: 1.3.1
     Platform.Whoami:
       type: object
       required:
