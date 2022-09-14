@@ -512,7 +512,7 @@ paths:
                 type: array
                 items:
                   $ref: 'define schema here (file name, metadata - size and all that stuff)'
-        '400'
+        '400':
           description: The project ID was not valid.
           content:
             application/json:
@@ -530,83 +530,83 @@ paths:
                 $ref: '#/components/schemas/ErrorResponse'
     post:
       security:
-        - conclaveAuth: []
-        description: Upload a file to the cloud storage.
-        operationId: uploadFile
-        tags:
+        - conclaveAuth: [ ]
+      description: 'Upload a file to the cloud storage'
+      operationId: uploadFile
+      tags:
         - Storage
-        parameters:
-          - $ref: "#components/parameters/projectID"
-        requestBody:
-          required: true
-          content:
-            application/json:
-              schema:
-                $ref: "define the schema on /components/shemas/Storage or something like that"
-        responses:
-        '200':
-          description: Successfully uploaded the file.
-          content:
-            application/json:
-              schema:
-                $ref: 'same schema as the request'
-        '400':
-          description: Bad request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
-        '403':
-          $ref: "#/components/responses/ForbiddenError"
-        default:
-          description: Any error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+      parameters:
+        - $ref: "#components/parameters/projectID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "define the schema on /components/shemas/Storage or something like that"
+      responses:
+      '200':
+        description: Successfully uploaded the file.
+        content:
+          application/json:
+            schema:
+              $ref: 'same schema as the request'
+      '400':
+        description: Bad request.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        $ref: "#/components/responses/UnauthorizedError"
+      '403':
+        $ref: "#/components/responses/ForbiddenError"
+      default:
+        description: Any error.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
               
   /projects/{projectID}/storage/{name}:
     get:
       security:
         - conclaveAuth": []
-        description: Get details for a particular file.
-        operationId: getFile
-        tags:
-          - Storage
-        parameters:
-          - $ref: "#components/parameters/projectID"
-          - name: name
-          description: Name of the file.
+          description: Get details for a particular file.
+          operationId: getFile
+      tags:
+        - Storage
+      parameters:
+        - $ref: "#components/parameters/projectID"
+        - name: name
+          description: 'Name of the file.'
           example: hello-world.txt
           in: path
           required: true
           schema:
             type: string
-            responses:
-        '200':
-          description: Successfully returned the file details.
-          content:
-            application/json:
-              schema:
-                $ref: 'to be defined'
-        '400':
-          description: The project ID or file name was not valid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
-        '403':
-          $ref: "#/components/responses/ForbiddenError"
-        default:
-          description: Any error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+      responses:
+      '200':
+        description: Successfully returned the file details.
+        content:
+          application/json:
+            schema:
+              $ref: 'to be defined'
+      '400':
+        description: The project ID or file name was not valid.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
+      '401':
+        $ref: "#/components/responses/UnauthorizedError"
+      '403':
+        $ref: "#/components/responses/ForbiddenError"
+      default:
+        description: Any error.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ErrorResponse'
     delete:
       security:
         - conclaveAuth: []
