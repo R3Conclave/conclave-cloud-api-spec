@@ -134,6 +134,28 @@ components:
           minLength: 64
           example: 7EC88782A989E8C9F989CB898E97866554343445A7EC88782A989E8C9F989CB8
 
+    FileData:
+      required:
+        - fileName
+        - size
+        - lastModified
+      properties:
+        fileName:
+          type: string
+          description: Name of the file
+          minLength: 1
+          example: filename.txt
+        size:
+          type: int64
+          description: Size of the file
+          example: 123456
+        lastModified:
+          type: int64
+          description: Last time the file was modified
+          minSize: 12
+          example: 1664464053631
+
+
     Invocation:
       properties:
         name:
@@ -503,6 +525,18 @@ paths:
         - Storage
       parameters:
         - $ref: "#/components/parameters/projectID"
+        - name: limit
+          description: Number of entities to include in the result (0-200). The default limit is 30. A value of 0 sets the limit to the maximum.
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: skip
+          description: Number of entities to skip in the result.
+          in: query
+          required: false
+          schema:
+            type: integer
       responses:
         '200':
           description: Successfully returned files stored.
@@ -511,7 +545,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: 'define schema here (file name, metadata - size and all that stuff)'
+                  $ref: '#/components/schemas/FileData'
         '400':
           description: The project ID was not valid.
           content:
@@ -542,7 +576,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: "define the schema on /components/shemas/Storage or something like that"
+              $ref: '#/components/schemas/FileData'
       responses:
       '200':
         description: Successfully uploaded the file.
@@ -590,7 +624,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: 'to be defined'
+              $ref: '#/components/schemas/FileData'
       '400':
         description: The project ID or file name was not valid.
         content:
