@@ -199,6 +199,168 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
 
+  /projects/{projectsID}/storage:
+    get:
+      security:
+        - conclaveAuth: []
+      description: Get the files stored in a project.
+      operationId: getStorage
+      tags:
+        - Storage
+      parameters:
+        - $ref: "#/components/parameters/projectID"
+        - name: limit
+          description: Number of entities to include in the result (0-200). The default limit is 30. A value of 0 sets the limit to the maximum.
+          in: query
+          required: false
+          schema:
+            type: integer
+        - name: skip
+          description: Number of entities to skip in the result.
+          in: query
+          required: false
+          schema:
+            type: integer
+      responses:
+        '200':
+          description: Successfully returned files stored.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FileData'
+        '400':
+          description: The project ID was not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          description: Any error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    post:
+      security:
+        - conclaveAuth: [ ]
+      description: 'Upload a file to the cloud storage'
+      operationId: uploadFile
+      tags:
+        - Storage
+      parameters:
+        - $ref: "#/components/parameters/projectID"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FileData'
+      responses:
+        '200':
+          description: Successfully uploaded the file.
+          content:
+            application/json:
+              schema:
+                $ref: 'same schema as the request'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          description: Any error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+              
+  /projects/{projectID}/storage/{name}:
+    get:
+      security:
+        - conclaveAuth": []
+          description: Get details for a particular file.
+          operationId: getFile
+      tags:
+        - Storage
+      parameters:
+        - $ref: "#/components/parameters/projectID"
+        - name: name
+          description: 'Name of the file.'
+          example: hello-world.txt
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Successfully returned the file details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileData'
+        '400':
+          description: The project ID or file name was not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          description: Any error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+    delete:
+      security:
+        - conclaveAuth: []
+      description: Delete a file from storage.
+      tags:
+        - Storage
+      operationId: deleteFile
+      parameters:
+        - $ref: "#/components/parameters/projectID"
+        - name: name
+          description: Name of the file to delete.
+          example: hello-world.txt
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: The file was deleted successfully.
+        '400':
+          description: The project ID or file name was not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          description: Any error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'     
+                
   /projects/{projectUID}/functions:
     get:
       description: Get the list of functions in a project.
