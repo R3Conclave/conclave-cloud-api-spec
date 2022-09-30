@@ -577,28 +577,28 @@ paths:
             schema:
               $ref: '#/components/schemas/FileData'
       responses:
-      '200':
-        description: Successfully uploaded the file.
-        content:
-          application/json:
-            schema:
-              $ref: 'same schema as the request'
-      '400':
-        description: Bad request.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        $ref: "#/components/responses/UnauthorizedError"
-      '403':
-        $ref: "#/components/responses/ForbiddenError"
-      default:
-        description: Any error.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
+        '200':
+          description: Successfully uploaded the file.
+          content:
+            application/json:
+              schema:
+                $ref: 'same schema as the request'
+        '400':
+          description: Bad request.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          description: Any error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
               
   /projects/{projectID}/storage/{name}:
     get:
@@ -618,28 +618,28 @@ paths:
           schema:
             type: string
       responses:
-      '200':
-        description: Successfully returned the file details.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/FileData'
-      '400':
-        description: The project ID or file name was not valid.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
-      '401':
-        $ref: "#/components/responses/UnauthorizedError"
-      '403':
-        $ref: "#/components/responses/ForbiddenError"
-      default:
-        description: Any error.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/ErrorResponse'
+        '200':
+          description: Successfully returned the file details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileData'
+        '400':
+          description: The project ID or file name was not valid.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          description: Any error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ErrorResponse'
     delete:
       security:
         - conclaveAuth: []
