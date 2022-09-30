@@ -152,7 +152,6 @@ components:
         lastModified:
           type: int64
           description: Last time the file was modified
-          minSize: 12
           example: 1664464053631
 
 
