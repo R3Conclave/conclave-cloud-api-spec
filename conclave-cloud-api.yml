@@ -146,11 +146,13 @@ components:
           minLength: 1
           example: filename.txt
         size:
-          type: int64
+          type: integer
+          format: int64
           description: Size of the file
           example: 123456
         lastModified:
-          type: int64
+          type: integer
+          format: int64
           description: Last time the file was modified
           example: 1664464053631
 
