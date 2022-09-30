@@ -994,28 +994,6 @@ components:
           default: 256
           minimum: 1
           maximum: 512
-    Invocations.Invocation:
-      description: Full invocation details
-      type: object
-      properties:
-        uid:
-          type: string
-          description: UID of an invocation
-          example: 2c37ace110144717b7ace110146717bc
-        function:
-          type: object
-          description: The function that was invoked
-          properties:
-            name:
-              type: string
-              description: Name of the invoked function.
-            version:
-              type: string
-              description: Semantic version of the invoked function.
-          example:
-            name: sayHello
-            version: 223.3.4
-
     FileData:
       required:
         - fileName
@@ -1037,19 +1015,27 @@ components:
           format: int64
           description: Last time the file was modified
           example: 1664464053631
-
-
-    Invocation:
+    Invocations.Invocation:
+      description: Full invocation details
+      type: object
       properties:
-        name:
+        uid:
           type: string
-          description: Name of the item
-        version:
-          type: string
-          description: Semantic version of the item
-        invocationId:
-          type: string
-          description: Id of the invocation
+          description: UID of an invocation
+          example: 2c37ace110144717b7ace110146717bc
+        function:
+          type: object
+          description: The function that was invoked
+          properties:
+            name:
+              type: string
+              description: Name of the invoked function.
+            version:
+              type: string
+              description: Semantic version of the invoked function.
+          example:
+            name: sayHello
+            version: 223.3.4
         start:
           type: integer
           format: int64
@@ -1377,3 +1363,4 @@ components:
           format: int64
           description: Execution time in MB-ms.
           example: 312
+          
