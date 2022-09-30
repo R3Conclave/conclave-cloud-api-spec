@@ -550,7 +550,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#components/schemas/ErrorResponse'
+                $ref: '#/components/schemas/ErrorResponse'
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
@@ -569,7 +569,7 @@ paths:
       tags:
         - Storage
       parameters:
-        - $ref: "#components/parameters/projectID"
+        - $ref: "#/components/parameters/projectID"
       requestBody:
         required: true
         content:
@@ -609,7 +609,7 @@ paths:
       tags:
         - Storage
       parameters:
-        - $ref: "#components/parameters/projectID"
+        - $ref: "#/components/parameters/projectID"
         - name: name
           description: 'Name of the file.'
           example: hello-world.txt
