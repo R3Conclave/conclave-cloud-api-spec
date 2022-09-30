@@ -231,21 +231,15 @@ paths:
                 items:
                   $ref: '#/components/schemas/FileData'
         '400':
-          description: The project ID was not valid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
-          description: Any error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: "#/components/responses/GenericError"
     post:
       security:
         - conclaveAuth: [ ]
@@ -269,21 +263,15 @@ paths:
               schema:
                 $ref: 'same schema as the request'
         '400':
-          description: Bad request.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
-          description: Any error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: "#/components/responses/GenericError"
               
   /projects/{projectID}/storage/{name}:
     get:
@@ -310,21 +298,15 @@ paths:
               schema:
                 $ref: '#/components/schemas/FileData'
         '400':
-          description: The project ID or file name was not valid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
-          description: Any error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: "#/components/responses/GenericError"
     delete:
       security:
         - conclaveAuth: []
@@ -345,22 +327,16 @@ paths:
         '200':
           description: The file was deleted successfully.
         '400':
-          description: The project ID or file name was not valid.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'
+          $ref: "#/components/responses/InvalidError"
         '401':
           $ref: "#/components/responses/UnauthorizedError"
         '403':
           $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
         default:
-          description: Any error.
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/ErrorResponse'     
-                
+          $ref: "#/components/responses/GenericError"    
+
   /projects/{projectUID}/functions:
     get:
       description: Get the list of functions in a project.
