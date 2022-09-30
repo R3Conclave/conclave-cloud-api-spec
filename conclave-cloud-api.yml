@@ -209,18 +209,8 @@ paths:
         - Storage
       parameters:
         - $ref: "#/components/parameters/projectID"
-        - name: limit
-          description: Number of entities to include in the result (0-200). The default limit is 30. A value of 0 sets the limit to the maximum.
-          in: query
-          required: false
-          schema:
-            type: integer
-        - name: skip
-          description: Number of entities to skip in the result.
-          in: query
-          required: false
-          schema:
-            type: integer
+        - $ref: "#/components/parameters/Functions.List.Limit"
+        - $ref: "#/components/parameters/Functions.List.Skip"
       responses:
         '200':
           description: Successfully returned files stored.
@@ -283,13 +273,7 @@ paths:
         - Storage
       parameters:
         - $ref: "#/components/parameters/projectID"
-        - name: name
-          description: 'Name of the file.'
-          example: hello-world.txt
-          in: path
-          required: true
-          schema:
-            type: string
+        - name: "#/components/parameters/Storage.FileName"
       responses:
         '200':
           description: Successfully returned the file details.
@@ -316,13 +300,7 @@ paths:
       operationId: deleteFile
       parameters:
         - $ref: "#/components/parameters/projectID"
-        - name: name
-          description: Name of the file to delete.
-          example: hello-world.txt
-          in: path
-          required: true
-          schema:
-            type: string
+        - name: "#/components/parameters/Storage.FileName"
       responses:
         '200':
           description: The file was deleted successfully.
@@ -1132,7 +1110,11 @@ components:
           default: 256
           minimum: 1
           maximum: 512
-    FileData:
+    Storage.FileName:
+      type: string
+      pattern: "^[\w,\s-]+\.[A-Za-z]{3}$"
+      example: myFile.txt
+    Storage.FileData:
       required:
         - fileName
         - size
