@@ -1120,7 +1120,7 @@ components:
           maximum: 512
     Storage.FileName:
       type: string
-      pattern: "^[a-zA-Z0-9_]+\.[A-Za-z]{3}$"
+      pattern: "^[a-zA-Z0-9_]+\\.[A-Za-z]{3}$"
       example: myFile.txt
     Storage.FileData:
       required:
