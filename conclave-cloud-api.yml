@@ -219,7 +219,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/FileData'
+                  $ref: '#/components/schemas/Storage.FileData'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -244,14 +244,14 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/FileData'
+              $ref: '#/components/schemas/Storage.FileData'
       responses:
         '200':
           description: Successfully uploaded the file.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileData'
+                $ref: '#/components/schemas/Storage.FileData'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -280,7 +280,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileData'
+                $ref: '#/components/schemas/Storage.FileData'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
