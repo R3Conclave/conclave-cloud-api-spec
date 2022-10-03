@@ -199,7 +199,7 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
 
-  /projects/{projectsID}/storage:
+  /projects/{projectUID}/storage:
     get:
       security:
         - conclaveAuth: []
@@ -208,7 +208,7 @@ paths:
       tags:
         - Storage
       parameters:
-        - $ref: "#/components/parameters/projectID"
+        - $ref: "#/components/parameters/projectUID"
         - $ref: "#/components/parameters/Functions.List.Limit"
         - $ref: "#/components/parameters/Functions.List.Skip"
       responses:
@@ -238,7 +238,7 @@ paths:
       tags:
         - Storage
       parameters:
-        - $ref: "#/components/parameters/projectID"
+        - $ref: "#/components/parameters/projectUID"
       requestBody:
         required: true
         content:
@@ -263,7 +263,7 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
               
-  /projects/{projectID}/storage/{name}:
+  /projects/{projectUID}/storage/{name}:
     get:
       security:
         - conclaveAuth": []
@@ -272,7 +272,7 @@ paths:
       tags:
         - Storage
       parameters:
-        - $ref: "#/components/parameters/projectID"
+        - $ref: "#/components/parameters/projectUID"
         - $ref: "#/components/parameters/fileName"
       responses:
         '200':
@@ -299,7 +299,7 @@ paths:
         - Storage
       operationId: deleteFile
       parameters:
-        - $ref: "#/components/parameters/projectID"
+        - $ref: "#/components/parameters/projectUID"
         - $ref: "#/components/parameters/fileName"
       responses:
         '200':
