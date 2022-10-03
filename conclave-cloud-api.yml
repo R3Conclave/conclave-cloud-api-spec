@@ -273,7 +273,7 @@ paths:
         - Storage
       parameters:
         - $ref: "#/components/parameters/projectID"
-        - name: "#/components/parameters/Storage.FileName"
+        - $ref: "#/components/parameters/fileName"
       responses:
         '200':
           description: Successfully returned the file details.
@@ -300,7 +300,7 @@ paths:
       operationId: deleteFile
       parameters:
         - $ref: "#/components/parameters/projectID"
-        - name: "#/components/parameters/Storage.FileName"
+        - $ref: "#/components/parameters/fileName"
       responses:
         '200':
           description: The file was deleted successfully.
@@ -970,6 +970,14 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/Functions.Name"
+    fileName:
+      name: fileName
+      description: Name of a file.
+      example: filename.txt
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Storage.FileName"
   schemas:
     ApiKeys.ApiKey:
       type: object
