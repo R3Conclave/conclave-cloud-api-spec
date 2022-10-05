@@ -524,7 +524,7 @@ paths:
           $ref: "#/components/responses/ForbiddenError"
         default:
           $ref: "#/components/responses/GenericError"
-    post:
+    put:
       description: Set the manifest a project.
       x-permissions-required:
         $ref: "#/components/x-permissions/Manifest.Write"
