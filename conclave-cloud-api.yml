@@ -10,6 +10,8 @@ tags:
     description: Management of API keys. A key is bound to a specific project and allows the usage of some of the endpoints of this API. To see what actions you can execute, check the `platform.whoami` operation.
   - name: Projects
     description: Management of projects. Every project can contain functions which can be invoked(see `Functions`,`Invocations` and `Keys`).
+  - name: Manifest
+    description: Management of a project manifest. Controls the whole state of the project.
   - name: Functions
     description: Management of functions(see `Invocations` for calling functions/getting results). Every function is bound to a single project.
   - name: Keys
@@ -501,6 +503,50 @@ paths:
           $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
+  /projects/{projectUID}/manifest:
+    get:
+      description: Get the manifest for a project.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Manifest.Read"
+      operationId: manifest.get
+      tags:
+        - Manifest
+      parameters:
+        - $ref: "#/components/parameters/projectUID"
+      responses:
+        '200':
+          $ref: "#/components/responses/Manifest.Manifest"
+        '400':
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          $ref: "#/components/responses/GenericError"
+    post:
+      description: Set the manifest a project.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Manifest.Write"
+      operationId: manifest.set
+      tags:
+        - Manifest
+      parameters:
+        - $ref: "#/components/parameters/projectUID"
+      requestBody:
+        $ref: "#/components/requestBodies/Manifest.Set"
+      responses:
+        '204':
+          description: Successfully set the manifest.
+        '400':
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        default:
+          $ref: "#/components/responses/GenericError"
+
 components:
   x-error-codes:
     UNAUTHORIZED: 100
@@ -529,6 +575,8 @@ components:
     KeysPublic.Read: KeysPublic.Read
     Platform.Invoicing.Get: Platform.Invoicing.Get
     Platform.Usage.Get: Platform.Usage.Get
+    Manifest.Read: Manifest.Read
+    Manifest.Write: Manifest.Write
   securitySchemes:
     conclaveAuth:
       type: http
@@ -554,7 +602,19 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Invocations.Invoke"
+    Manifest.Set:
+      required: true
+      content:
+        application/yaml:
+          schema:
+            $ref: '#/components/schemas/Manifest.Set'
   responses:
+    Manifest.Manifest:
+      description: Successfully returned manifest.
+      content:
+        application/yaml:
+          schema:
+            $ref: '#/components/schemas/Manifest.Manifest'
     ApiKeys.Create:
       description: An API key that you can use to execute operations against a specific project.
       content:
@@ -682,7 +742,7 @@ components:
           schema:
             $ref: "#/components/schemas/Generic.ErrorResponse"
     NotFoundError:
-      description: The specfied entity does not exist.
+      description: The specified entity does not exist.
       content:
         application/problem+json:
           schema:
@@ -855,6 +915,10 @@ components:
       schema:
         $ref: "#/components/schemas/Functions.Name"
   schemas:
+    Manifest.Set:
+      $ref: "#/components/schemas/Manifest.Manifest"
+    Manifest.Manifest:
+      type: object
     ApiKeys.ApiKey:
       type: object
       required:
@@ -970,6 +1034,11 @@ components:
           type: string
           description: The entry point of the code.
           pattern: "^[a-zA-Z0-9+/=]+$"
+        language:
+          type: string
+          description: The language runtime to use when executing the function.
+          pattern: "^[a-zA-Z0-9+/=]+$"
+          default: "javascript"
     Functions.Function.Limits:
       description: Limits on a specific function.
       properties:
