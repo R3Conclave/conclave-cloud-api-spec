@@ -217,7 +217,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Storage.FileData'
+                  $ref: '#/components/schemas/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -247,7 +247,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Storage.FileData'
+                $ref: '#/components/schemas/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -274,7 +274,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Storage.FileData'
+                $ref: '#/components/schemas/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -1128,6 +1128,25 @@ components:
           type: string
           description: Contents of the file
           minLength: 1
+    Storage.FileMeta:
+      required:
+        - fileName
+        - size
+        - lastModified
+      properties:
+        fileName:
+          type: string
+          description: Name of the file
+          minLength: 1
+          example: filename.txt
+        size:
+          type: integer
+          format: int64
+          description: Size of the file
+        lastModified:
+          type: integer
+          format: int64
+          description: Date of when the file was last modified
     Invocations.Invocation:
       description: Full invocation details
       type: object
