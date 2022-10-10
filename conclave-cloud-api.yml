@@ -261,8 +261,8 @@ paths:
               
   /projects/{projectUID}/storage/{name}:
     get:
-        description: Get details for a particular file.
-        operationId: getFile
+      description: Get details for a particular file.
+      operationId: getFile
       tags:
         - Storage
       parameters:
