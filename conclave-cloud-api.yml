@@ -267,8 +267,8 @@ paths:
     get:
       security:
         - conclaveAuth": []
-          description: Get details for a particular file.
-          operationId: getFile
+        description: Get details for a particular file.
+        operationId: getFile
       tags:
         - Storage
       parameters:
@@ -1125,24 +1125,17 @@ components:
     Storage.FileData:
       required:
         - fileName
-        - size
-        - lastModified
+        - fileData
       properties:
         fileName:
           type: string
           description: Name of the file
           minLength: 1
           example: filename.txt
-        size:
-          type: integer
-          format: int64
-          description: Size of the file
-          example: 123456
-        lastModified:
-          type: integer
-          format: int64
-          description: Last time the file was modified
-          example: 1664464053631
+        fileData:
+          type: string
+          description: Contents of the file
+          minLength: 1
     Invocations.Invocation:
       description: Full invocation details
       type: object
