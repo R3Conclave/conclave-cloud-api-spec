@@ -201,8 +201,6 @@ paths:
 
   /projects/{projectUID}/storage:
     get:
-      security:
-        - conclaveAuth: []
       description: Get the files stored in a project.
       operationId: getStorage
       tags:
@@ -231,8 +229,6 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
     post:
-      security:
-        - conclaveAuth: [ ]
       description: 'Upload a file to the cloud storage'
       operationId: uploadFile
       tags:
@@ -265,8 +261,6 @@ paths:
               
   /projects/{projectUID}/storage/{name}:
     get:
-      security:
-        - conclaveAuth": []
         description: Get details for a particular file.
         operationId: getFile
       tags:
@@ -292,8 +286,6 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
     delete:
-      security:
-        - conclaveAuth: []
       description: Delete a file from storage.
       tags:
         - Storage
