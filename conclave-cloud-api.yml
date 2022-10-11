@@ -217,7 +217,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/responses/Storage.FileMeta'
+                  $ref: '#/components/schemas/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -236,14 +236,14 @@ paths:
       parameters:
         - $ref: "#/components/parameters/projectUID"
       requestBody:
-        $ref: '#/components/requestBodies/Storage.FileData'
+        $ref: '#/components/schemas/Storage.FileData'
       responses:
         '200':
           description: Successfully uploaded the file.
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Storage.FileMeta'
+                $ref: '#/components/schemas/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -270,7 +270,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/responses/Storage.FileMeta'
+                $ref: '#/components/schemas/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -659,20 +659,18 @@ components:
           schema:
             $ref: "#/components/schemas/Invocations.Invoke"
     Storage.FileData:
-      required:
-        - fileName
-        - fileData
-      properties:
-        fileName:
-          type: string
-          description: Name of the file
-          minLength: 1
-          example: filename.txt
-        fileData:
-          type: string
-          description: Contents of the file
-          minLength: 1
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Storage.FileData'
   responses:
+    Storage.FileMeta:
+      description: The file metadata.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Storage.FileMeta'
     ApiKeys.Create:
       description: An API key that you can use to execute operations against a specific project.
       content:
@@ -817,25 +815,6 @@ components:
         application/problem+json:
           schema:
             $ref: '#/components/schemas/Generic.ErrorResponse'
-    Storage.FileMeta:
-      required:
-        - fileName
-        - size
-        - lastModified
-      properties:
-        fileName:
-          type: string
-          description: Name of the file
-          minLength: 1
-          example: filename.txt
-        size:
-          type: integer
-          format: int64
-          description: Size of the file
-        lastModified:
-          type: integer
-          format: int64
-          description: Date of when the file was last modified
   parameters:
     Functions.List.Limit:
       name: limit
@@ -1143,6 +1122,39 @@ components:
       type: string
       pattern: "^[a-zA-Z0-9_]+\\.[A-Za-z]{3}$"
       example: myFile.txt
+    Storage.FileData:
+      required:
+        - fileName
+        - fileData
+      properties:
+        fileName:
+          type: string
+          description: Name of the file
+          minLength: 1
+          example: filename.txt
+        fileData:
+          type: string
+          description: Contents of the file
+          minLength: 1
+    Storage.FileMeta:
+      required:
+        - fileName
+        - size
+        - lastModified
+      properties:
+        fileName:
+          type: string
+          description: Name of the file
+          minLength: 1
+          example: filename.txt
+        size:
+          type: integer
+          format: int64
+          description: Size of the file
+        lastModified:
+          type: integer
+          format: int64
+          description: Date of when the file was last modified
     Invocations.Invocation:
       description: Full invocation details
       type: object
