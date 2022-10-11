@@ -217,7 +217,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/Storage.FileMeta'
+                  $ref: '#/components/responses/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -236,14 +236,14 @@ paths:
       parameters:
         - $ref: "#/components/parameters/projectUID"
       requestBody:
-        $ref: '#/components/schemas/Storage.FileData'
+        $ref: '#/components/requestBodies/Storage.FileData'
       responses:
         '200':
           description: Successfully uploaded the file.
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Storage.FileMeta'
+                $ref: '#/components/responses/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -255,7 +255,7 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
               
-  /projects/{projectUID}/storage/{name}:
+  /projects/{projectUID}/storage/{fileName}:
     get:
       description: Get details for a particular file.
       operationId: getFile
@@ -270,7 +270,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Storage.FileMeta'
+                $ref: '#/components/responses/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
