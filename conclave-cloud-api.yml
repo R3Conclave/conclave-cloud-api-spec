@@ -236,11 +236,7 @@ paths:
       parameters:
         - $ref: "#/components/parameters/projectUID"
       requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/Storage.FileData'
+        - $ref: '#/components/schemas/Storage.FileData'
       responses:
         '200':
           description: Successfully uploaded the file.
