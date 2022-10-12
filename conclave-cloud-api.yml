@@ -211,7 +211,13 @@ paths:
         - $ref: "#/components/parameters/Functions.List.Skip"
       responses:
         '200':
-          $ref: "#/components/responses/Storage.List"
+          description: Successfully returned files stored.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/responses/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -665,12 +671,6 @@ components:
         application/json:
           schema:
             $ref: '#/components/schemas/Storage.FileMeta'
-    Storage.List:
-      description: Successfully return the files stored.
-      content:
-        application/json:
-          schema:
-            $ref: "#/components/schemas/Storage.List"
     ApiKeys.Create:
       description: An API key that you can use to execute operations against a specific project.
       content:
@@ -1155,13 +1155,6 @@ components:
           type: integer
           format: int64
           description: Date of when the file was last modified
-    Storage.List:
-      type: object
-      required:
-        - list
-      properties:
-        list:
-          $ref: "#/components/schemas/Storage.FileMeta"
     Invocations.Invocation:
       description: Full invocation details
       type: object
