@@ -1161,8 +1161,7 @@ components:
         - list
       properties:
         list:
-          items:
-            $ref: "#/components/schemas/Storage.FileMeta"
+          $ref: "#/components/schemas/Storage.FileMeta"
     Invocations.Invocation:
       description: Full invocation details
       type: object
