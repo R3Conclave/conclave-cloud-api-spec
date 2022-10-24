@@ -199,6 +199,110 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
 
+  /projects/{projectUID}/storage:
+    get:
+      description: List files stored in a project.
+      operationId: listStorage
+      tags:
+        - Storage
+      parameters:
+        - $ref: "#/components/parameters/projectUID"
+        - $ref: "#/components/parameters/Storage.List.Limit"
+        - $ref: "#/components/parameters/Storage.List.Skip"
+      responses:
+        '200':
+          description: Successfully returned files stored.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/responses/Storage.FileMeta'
+        '400':
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/GenericError"
+    post:
+      description: 'Upload a file to the cloud storage'
+      operationId: uploadFile
+      tags:
+        - Storage
+      parameters:
+        - $ref: "#/components/parameters/projectUID"
+      requestBody:
+        $ref: '#/components/requestBodies/Storage.FileData'
+      responses:
+        '200':
+          description: Successfully uploaded the file.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Storage.FileMeta'
+        '400':
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/GenericError"
+              
+  /projects/{projectUID}/storage/{fileName}:
+    get:
+      description: Get metadata from a particular file.
+      operationId: getFile
+      tags:
+        - Storage
+      parameters:
+        - $ref: "#/components/parameters/projectUID"
+        - $ref: "#/components/parameters/fileName"
+      responses:
+        '200':
+          description: Successfully returned the file details.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/responses/Storage.FileMeta'
+        '400':
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/GenericError"
+    delete:
+      description: Delete a file from storage.
+      tags:
+        - Storage
+      operationId: deleteFile
+      parameters:
+        - $ref: "#/components/parameters/projectUID"
+        - $ref: "#/components/parameters/fileName"
+      responses:
+        '200':
+          description: The file was deleted successfully.
+        '400':
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/GenericError"    
+
   /projects/{projectUID}/functions:
     get:
       description: Get the list of functions in a project.
@@ -554,7 +658,19 @@ components:
         application/json:
           schema:
             $ref: "#/components/schemas/Invocations.Invoke"
+    Storage.FileData:
+      required: true
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Storage.FileData'
   responses:
+    Storage.FileMeta:
+      description: The file metadata.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/Storage.FileMeta'
     ApiKeys.Create:
       description: An API key that you can use to execute operations against a specific project.
       content:
@@ -854,6 +970,33 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/Functions.Name"
+    fileName:
+      name: fileName
+      description: Name of a file.
+      example: filename.txt
+      in: path
+      required: true
+      schema:
+        $ref: "#/components/schemas/Storage.FileName"
+    Storage.List.Limit:
+      name: limit
+      description: Number of entities to include in the result. A value of 0 sets the limit to the maximum.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 30
+        minimum: 0
+        maximum: 200
+    Storage.List.Skip:
+      name: skip
+      description: Number of entities to skip in the result.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
   schemas:
     ApiKeys.ApiKey:
       type: object
@@ -994,6 +1137,36 @@ components:
           default: 256
           minimum: 1
           maximum: 512
+    Storage.FileName:
+      type: string
+      example: myFile.txt
+    Storage.FileData:
+      required:
+        - fileName
+        - fileData
+      properties:
+        fileName:
+          $ref: "#/components/schemas/Storage.FileName"
+        fileData:
+          type: string
+          description: Contents of the file
+          minLength: 1
+    Storage.FileMeta:
+      required:
+        - fileName
+        - size
+        - lastModified
+      properties:
+        fileName:
+          $ref: "#/components/schemas/Storage.FileName"
+        size:
+          type: integer
+          format: int64
+          description: Size of the file
+        lastModified:
+          type: integer
+          format: int64
+          description: Date of when the file was last modified in milliseconds
     Invocations.Invocation:
       description: Full invocation details
       type: object
@@ -1342,3 +1515,4 @@ components:
           format: int64
           description: Execution time in MB-ms.
           example: 312
+          
