@@ -1166,7 +1166,7 @@ components:
         lastModified:
           type: integer
           format: int64
-          description: Date of when the file was last modified
+          description: Date of when the file was last modified in milliseconds
     Invocations.Invocation:
       description: Full invocation details
       type: object
