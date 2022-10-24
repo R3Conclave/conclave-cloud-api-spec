@@ -1128,10 +1128,7 @@ components:
         - fileData
       properties:
         fileName:
-          type: string
-          description: Name of the file
-          minLength: 1
-          example: filename.txt
+          $ref: "#/components/schemas/Storage.FileName"
         fileData:
           type: string
           description: Contents of the file
@@ -1143,10 +1140,7 @@ components:
         - lastModified
       properties:
         fileName:
-          type: string
-          description: Name of the file
-          minLength: 1
-          example: filename.txt
+          $ref: "#/components/schemas/Storage.FileName"
         size:
           type: integer
           format: int64
