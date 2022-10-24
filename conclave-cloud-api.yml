@@ -201,14 +201,14 @@ paths:
 
   /projects/{projectUID}/storage:
     get:
-      description: Get the files stored in a project.
+      description: List files stored in a project.
       operationId: getStorage
       tags:
         - Storage
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - $ref: "#/components/parameters/Functions.List.Limit"
-        - $ref: "#/components/parameters/Functions.List.Skip"
+        - $ref: "#/components/parameters/Storage.List.Limit"
+        - $ref: "#/components/parameters/Storage.List.Skip"
       responses:
         '200':
           description: Successfully returned files stored.
@@ -257,7 +257,7 @@ paths:
               
   /projects/{projectUID}/storage/{fileName}:
     get:
-      description: Get details for a particular file.
+      description: Get metadata from a particular file.
       operationId: getFile
       tags:
         - Storage
@@ -978,6 +978,25 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/Storage.FileName"
+    Storage.List.Limit:
+      name: limit
+      description: Number of entities to include in the result. A value of 0 sets the limit to the maximum.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 30
+        minimum: 0
+        maximum: 200
+    Storage.List.Skip:
+      name: skip
+      description: Number of entities to skip in the result.
+      in: query
+      required: false
+      schema:
+        type: integer
+        default: 0
+        minimum: 0
   schemas:
     ApiKeys.ApiKey:
       type: object
@@ -1120,7 +1139,6 @@ components:
           maximum: 512
     Storage.FileName:
       type: string
-      pattern: "^[a-zA-Z0-9_]+\\.[A-Za-z]{3}$"
       example: myFile.txt
     Storage.FileData:
       required:
