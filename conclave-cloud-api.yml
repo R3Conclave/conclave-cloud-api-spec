@@ -202,7 +202,7 @@ paths:
   /projects/{projectUID}/storage:
     get:
       description: List files stored in a project.
-      operationId: getStorage
+      operationId: listStorage
       tags:
         - Storage
       parameters:
