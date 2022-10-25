@@ -605,14 +605,14 @@ components:
     Manifest.Set:
       required: true
       content:
-        application/yaml:
+        application/json:
           schema:
             $ref: '#/components/schemas/Manifest.Set'
   responses:
     Manifest.Manifest:
       description: Successfully returned manifest.
       content:
-        application/yaml:
+        application/json:
           schema:
             $ref: '#/components/schemas/Manifest.Manifest'
     ApiKeys.Create:
@@ -1290,23 +1290,7 @@ components:
 
     Keys.PublicKey.KeySpecification:
       type: object
-      required:
-        - name
-        - masterKeyType
-        - policyConstraint
-      properties:
-        name:
-          type: string
-          description: The name of the key.
-          example: E2EF94CF25D497DB7BC6C2D313434EB65FC2282E1502C40229DB3B624AEC7E4D=
-        masterKeyType:
-          type: string
-          description: The master key to use to derive the key from
-          example: r3production
-        policyConstraint:
-          type: string
-          description: The policy to use to constrain access of the private key material.
-          example: SEC:SECURE
+      additionalProperties: true
 
     Project.Uid:
       $ref: "#/components/schemas/Generic.Uid"
