@@ -276,8 +276,8 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"    
   
-
-  /projects/{projectUID}/storage:
+              
+  /projects/{projectUID}/storage/{path}:
     post:
       description: 'Upload a file to the cloud storage'
       operationId: uploadFile
@@ -285,6 +285,7 @@ paths:
         - Storage
       parameters:
         - $ref: "#/components/parameters/projectUID"
+        - $ref: "#/components/parameters/path"
       requestBody:
         $ref: '#/components/requestBodies/Storage.FileData'
       responses:
@@ -304,8 +305,6 @@ paths:
           $ref: "#/components/responses/NotFoundError"
         default:
           $ref: "#/components/responses/GenericError"
-              
-  /projects/{projectUID}/storage/{path}:
     get:
       description: Get metadata from a particular file.
       operationId: getFile
