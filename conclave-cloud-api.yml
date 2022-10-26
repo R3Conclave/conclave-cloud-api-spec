@@ -229,7 +229,7 @@ paths:
         description: List the files and directories stored in the path.
         operationId: listStorage
         tags:
-          - Storage
+          - Directories
         parameters:
           - $ref: "#/components/parameters/projectUID"
           - $ref: "#/components/parameters/Storage.List.Limit"
