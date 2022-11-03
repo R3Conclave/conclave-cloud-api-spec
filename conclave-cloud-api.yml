@@ -202,8 +202,6 @@ paths:
   /projects/{projectUID}/storage/directories/{path}:
     put:
       description: Create a new directory.
-      x-permissions-required:
-        $ref: "#/components/x-permissions/Storage.Write"
       tags:
         - Storage
       operationId: storage.createDirectory
@@ -211,8 +209,8 @@ paths:
         - $ref: "#/components/parameters/projectUID"
         - $ref: "#/components/parameters/path"
       responses:
-        '201':
-          $ref: "#/components/responses/Storage.CreateDirectory"
+        '204':
+          description: "The directory was created successfully."
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -225,8 +223,6 @@ paths:
           $ref: "#/components/responses/GenericError"
     get:
       description: Return a list of files and directories in a directory.
-      x-permissions-required:
-        $ref: "#/components/x-permissions/Storage.Read"
       tags:
         - Storage
       operationId: storage.listDirectory
@@ -235,7 +231,13 @@ paths:
         - $ref: "#/components/parameters/path"
       responses:
         '200':
-          $ref: "#/components/responses/Storage.ListDirectory"
+          description: Successfully returned files stored.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/responses/Storage.FileMeta'
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -248,8 +250,6 @@ paths:
           $ref: "#/components/responses/GenericError"
     delete:
       description: Delete a directory.
-      x-permissions-required:
-        $ref: "#/components/x-permissions/Storage.Write"
       tags:
         - Storage
       operationId: storage.deleteDirectory
@@ -273,15 +273,12 @@ paths:
   /projects/{projectUID}/storage/files/{path}:
     put:
       description: Upload a file.
-      x-permissions-required:
-        $ref: "#/components/x-permissions/Storage.Write"
       tags:
         - Storage
       operationId: uploadFile
       parameters:
         - $ref: "#/components/parameters/projectUID"
         - $ref: "#/components/parameters/path"
-        - $ref: "#/components/parameters/Storage.FileData"
       requestBody:
         $ref: "#/components/requestBodies/Storage.FileData"
       responses:
@@ -299,8 +296,6 @@ paths:
           $ref: "#/components/responses/GenericError"
     get:
       description: Get a file's metadata.
-      x-permissions-required:
-        $ref: "#/components/x-permissions/Storage.Read"
       tags:
         - Storage
       operationId: getFile
@@ -322,8 +317,6 @@ paths:
           $ref: "#/components/responses/GenericError"
     delete:
       description: Delete a file.
-      x-permissions-required:
-        $ref: "#/components/x-permissions/Storage.Write"
       tags:
         - Storage
       operationId: deleteFile
@@ -1019,14 +1012,14 @@ components:
       required: true
       schema:
         $ref: "#/components/schemas/Storage.FileName"
-    bucket:
-      name: bucket
-      description: Name of a bucket.
-      example: myBucket
+    path:
+      name: path
+      description: Path of a directory or file.
+      example: path/to/myFile.txt
       in: path
       required: true
       schema:
-        $ref: "#/components/schemas/Storage.Bucket"
+        $ref: "#/components/schemas/Storage.Path"
     Storage.List.Limit:
       name: limit
       description: Number of entities to include in the result. A value of 0 sets the limit to the maximum.
@@ -1186,9 +1179,9 @@ components:
           default: 256
           minimum: 1
           maximum: 512
-    Storage.Bucket:
+    Storage.Path:
       type: string
-      example: myBucket
+      example: path/to/file.txt
     Storage.FileName:
       type: string
       example: myFile
