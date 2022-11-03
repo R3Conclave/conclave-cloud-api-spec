@@ -199,39 +199,20 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
 
-  /project/{projectUID}/storage/{bucket}:
+  /projects/{projectUID}/storage/directories/{path}:
     put:
-      description: Create a new bucket.f
+      description: Create a new directory.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Storage.Write"
       tags:
         - Storage
-      operationId: storage.createBucket
+      operationId: storage.createDirectory
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - $ref: "#/components/parameters/bucket"
+        - $ref: "#/components/parameters/path"
       responses:
-        '204':
-            description: The file was deleted successfully.
-        '400':
-          $ref: "#/components/responses/InvalidError"
-        '401':
-          $ref: "#/components/responses/UnauthorizedError"
-        '403':
-          $ref: "#/components/responses/ForbiddenError"
-        '404':
-          $ref: "#/components/responses/NotFoundError"
-        default:
-          $ref: "#/components/responses/GenericError"
-    delete:
-      description: Delete an existing bucket.
-      tags:
-        - Storage
-      operationId: storage.deleteBucket
-      parameters:
-        - $ref: "#/components/parameters/projectUID"
-        - $ref: "#/components/parameters/bucket"
-      responses:
-        '204':
-          description: The bucket was deleted successfully.
+        '201':
+          $ref: "#/components/responses/Storage.CreateDirectory"
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -243,22 +224,41 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
     get:
-      description: List all files in a bucket.
+      description: Return a list of files and directories in a directory.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Storage.Read"
       tags:
         - Storage
-      operationId: storage.listBucket
+      operationId: storage.listDirectory
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - $ref: "#/components/parameters/bucket"
+        - $ref: "#/components/parameters/path"
       responses:
         '200':
-          description: Successfully returned files stored.
-          content:
-            application/json:
-              schema:
-                type: array
-                items:
-                  $ref: '#/components/responses/Storage.FileMeta'
+          $ref: "#/components/responses/Storage.ListDirectory"
+        '400':
+          $ref: "#/components/responses/InvalidError"
+        '401':
+          $ref: "#/components/responses/UnauthorizedError"
+        '403':
+          $ref: "#/components/responses/ForbiddenError"
+        '404':
+          $ref: "#/components/responses/NotFoundError"
+        default:
+          $ref: "#/components/responses/GenericError"
+    delete:
+      description: Delete a directory.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Storage.Write"
+      tags:
+        - Storage
+      operationId: storage.deleteDirectory
+      parameters:
+        - $ref: "#/components/parameters/projectUID"
+        - $ref: "#/components/parameters/path"
+      responses:
+        '204':
+          description: The directory was deleted successfully.
         '400':
           $ref: "#/components/responses/InvalidError"
         '401':
@@ -270,16 +270,18 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
 
-  /project/{projectUID}/storage/{bucket}/{fileName}:
+  /projects/{projectUID}/storage/files/{path}:
     put:
-      description: Upload a file to a bucket.
+      description: Upload a file.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Storage.Write"
       tags:
         - Storage
-      operationId: storage.uploadFile
+      operationId: uploadFile
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - $ref: "#/components/parameters/bucket"
-        - $ref: "#/components/parameters/fileName"
+        - $ref: "#/components/parameters/path"
+        - $ref: "#/components/parameters/Storage.FileData"
       requestBody:
         $ref: "#/components/requestBodies/Storage.FileData"
       responses:
@@ -296,14 +298,15 @@ paths:
         default:
           $ref: "#/components/responses/GenericError"
     get:
-      description: Get a file.
+      description: Get a file's metadata.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Storage.Read"
       tags:
         - Storage
-      operationId: storage.getFile
+      operationId: getFile
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - $ref: "#/components/parameters/bucket"
-        - $ref: "#/components/parameters/fileName"
+        - $ref: "#/components/parameters/path"
       responses:
         '200':
           $ref: "#/components/responses/Storage.FileMeta"
@@ -319,13 +322,14 @@ paths:
           $ref: "#/components/responses/GenericError"
     delete:
       description: Delete a file.
+      x-permissions-required:
+        $ref: "#/components/x-permissions/Storage.Write"
       tags:
         - Storage
-      operationId: storage.deleteFile
+      operationId: deleteFile
       parameters:
         - $ref: "#/components/parameters/projectUID"
-        - $ref: "#/components/parameters/bucket"
-        - $ref: "#/components/parameters/fileName"
+        - $ref: "#/components/parameters/path"
       responses:
         '204':
           description: The file was deleted successfully.
@@ -338,7 +342,7 @@ paths:
         '404':
           $ref: "#/components/responses/NotFoundError"
         default:
-          $ref: "#/components/responses/GenericError"  
+          $ref: "#/components/responses/GenericError"
 
   /projects/{projectUID}/functions:
     get:
