@@ -229,6 +229,8 @@ paths:
       parameters:
         - $ref: "#/components/parameters/projectUID"
         - $ref: "#/components/parameters/path"
+        - $ref: "#/components/parameters/Storage.List.Limit"
+        - $ref: "#/components/parameters/Storage.List.Skip"
       responses:
         '200':
           description: Successfully returned files stored.
