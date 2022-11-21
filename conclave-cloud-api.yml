@@ -84,6 +84,11 @@ components:
         main:
           type: string
           description: The entry point of the code
+        language:
+          type: string
+          description: The language runtime to use when executing the function.
+          pattern: "^[a-zA-Z0-9+/=]+$"
+          default: "javascript"
 
     FunctionLimits:
       description: Limits on a specific function
