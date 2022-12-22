@@ -87,7 +87,7 @@ components:
         language:
           type: string
           description: The language runtime to use when executing the function.
-          pattern: "^[a-zA-Z0-9+/=]+$"
+          pattern: "^[a-zA-Z0-9+/=#+]+$"
           default: "javascript"
 
     FunctionLimits:
